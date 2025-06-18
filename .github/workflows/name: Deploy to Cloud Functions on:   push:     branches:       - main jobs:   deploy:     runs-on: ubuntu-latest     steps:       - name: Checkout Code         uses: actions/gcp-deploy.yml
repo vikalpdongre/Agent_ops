@@ -1,0 +1,24 @@
+name: Deploy to Cloud Functions
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Authenticate GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy Cloud Function
+        run: |
+          gcloud functions deploy analyze_resume \
+          --runtime python39 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --source .
