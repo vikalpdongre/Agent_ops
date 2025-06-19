@@ -49,8 +49,8 @@ spec:
           containerPort: 8080
         resources:
           limits:
-            cpu: 1000m
-            memory: 512Mi
+            cpu: 10
+            memory: 512
         startupProbe:
           timeoutSeconds: 240
           periodSeconds: 240
