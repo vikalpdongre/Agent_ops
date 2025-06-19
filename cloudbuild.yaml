@@ -1,21 +1,3 @@
-steps:
-  # Step 1: Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'build',
-        '-t',
-        'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA',
-        '.'
-      ]
-
-  # Step 2: Push the Docker image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'push',
-        'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA'
-      ]
 
   # Step 3: Deploy to Cloud Run with the required settings
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
