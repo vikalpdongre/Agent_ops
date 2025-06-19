@@ -40,3 +40,6 @@ steps:
 
 images:
   - 'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
