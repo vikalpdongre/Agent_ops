@@ -1,4 +1,5 @@
 google-generativeai
 flask
 google-cloud-storage
+functions-framework==3.*
     
