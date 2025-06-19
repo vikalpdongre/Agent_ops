@@ -2,10 +2,9 @@ from flask import Flask, request, jsonify
 import google.generativeai as genai
 import os
 from  genmodel import analyze_resume_jd
-
-os.environ["GOOGLE_API_KEY"] =  '' # Replace with your actual API key
-
-genai.configure(api_key="")
+# Get the Google API key from GitHub Actions secrets (environment variable)
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "")  # Ensure this is set in your deployment environment
+genai.configure(api_key=GOOGLE_API_KEY)
 app = Flask(__name__)
 
 @app.route('/analyze', methods=['POST'])
