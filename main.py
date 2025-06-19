@@ -3,9 +3,9 @@ import google.generativeai as genai
 import os
 from  genmodel import analyze_resume_jd
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyDQ43Zsp9rJRpg5GI_LvW6pw-vJWLGA-xI"  # Replace with your actual API key
+os.environ["GOOGLE_API_KEY"] =  '' # Replace with your actual API key
 
-genai.configure(api_key="AIzaSyDQ43Zsp9rJRpg5GI_LvW6pw-vJWLGA-xI")
+genai.configure(api_key="")
 app = Flask(__name__)
 
 @app.route('/analyze', methods=['POST'])
