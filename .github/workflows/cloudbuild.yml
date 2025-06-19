@@ -1,0 +1,17 @@
+# cloudbuild.yaml
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - resume_score  # e.g., hello-http-api
+  - --runtime=python312 # Or your desired Python runtime (e.g., python311, python310)
+  - --trigger-http  - --entry-point=analyze_resume # e.g., hello_http (the function name in main.py)
+
+  - --source=.
+  - --region=asia-south1 # e.g., us-central1, asia-south1
+  - --allow-unauthenticated # If you want it publicly accessible
+  # - --set-env-vars=KEY=VALUE # Uncomment and add environment variables if needed
+  # - --memory=256MB # Uncomment and adjust memory if needed
+  # - --timeout=60s # Uncomment and adjust timeout if needed
