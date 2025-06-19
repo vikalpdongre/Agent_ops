@@ -1,83 +1,42 @@
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: agent-ops
-  namespace: '911008082076'
-  selfLink: /apis/serving.knative.dev/v1/namespaces/911008082076/services/agent-ops
-  uid: ea90c035-c67a-450e-aea8-ddbe38502a08
-  resourceVersion: AAY36qRwmYU
-  generation: 2
-  creationTimestamp: '2025-06-19T10:58:51.302829Z'
-  labels:
-    commit-sha: bf12a052b1fb116ba6b6ae1da6a453a70eecfab4
-    gcb-build-id: 3d0ff42a-0662-4d00-9dc2-ece36af689ab
-    gcb-trigger-id: da475f09-e3f3-4df4-a095-e600a6c00c13
-    managed-by: gcp-cloud-build-deploy-cloud-run
-    run.googleapis.com/satisfiesPzs: 'true'
-    cloud.googleapis.com/location: asia-south1
-  annotations:
-    serving.knative.dev/creator: 911008082076-compute@developer.gserviceaccount.com
-    serving.knative.dev/lastModifier: 911008082076-compute@developer.gserviceaccount.com
-    run.googleapis.com/client-name: gcloud
-    run.googleapis.com/client-version: 527.0.0
-    run.googleapis.com/operation-id: e1efb997-9b38-4925-9ea6-cf7ffb4c6058
-    run.googleapis.com/ingress: all
-    run.googleapis.com/ingress-status: all
-    run.googleapis.com/urls: '["https://agent-ops-911008082076.asia-south1.run.app","https://agent-ops-54lib5iv4a-el.a.run.app"]'
-spec:
-  template:
-    metadata:
-      labels:
-        client.knative.dev/nonce: phnhlflexc
-        commit-sha: bf12a052b1fb116ba6b6ae1da6a453a70eecfab4
-        gcb-build-id: 3d0ff42a-0662-4d00-9dc2-ece36af689ab
-        gcb-trigger-id: da475f09-e3f3-4df4-a095-e600a6c00c13
-        managed-by: gcp-cloud-build-deploy-cloud-run
-        run.googleapis.com/startupProbeType: Default
-      annotations:
-        autoscaling.knative.dev/maxScale: '20'
-        run.googleapis.com/client-name: gcloud
-        run.googleapis.com/client-version: 527.0.0
-    spec:
-      containerConcurrency: 80
-      timeoutSeconds: 300
-      serviceAccountName: 911008082076-compute@developer.gserviceaccount.com
-      containers:
-      - image: asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:bf12a052b1fb116ba6b6ae1da6a453a70eecfab4
-        ports:
-        - name: http1
-          containerPort: 8080
-        resources:
-          limits:
-            cpu: 10
-            memory: 512
-        startupProbe:
-          timeoutSeconds: 240
-          periodSeconds: 240
-          failureThreshold: 1
-          tcpSocket:
-            port: 8080
-  traffic:
-  - percent: 100
-    latestRevision: true
-status:
-  observedGeneration: 2
-  conditions:
-  - type: Ready
-    status: 'True'
-    lastTransitionTime: '2025-06-19T10:59:40.981637Z'
-  - type: ConfigurationsReady
-    status: 'True'
-    lastTransitionTime: '2025-06-19T10:59:39.945751Z'
-  - type: RoutesReady
-    status: 'True'
-    lastTransitionTime: '2025-06-19T10:59:40.952209Z'
-  latestReadyRevisionName: agent-ops-00002-2dx
-  latestCreatedRevisionName: agent-ops-00002-2dx
-  traffic:
-  - revisionName: agent-ops-00002-2dx
-    percent: 100
-    latestRevision: true
-  url: https://agent-ops-54lib5iv4a-el.a.run.app
-  address:
-    url: https://agent-ops-54lib5iv4a-el.a.run.app
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA',
+        '.'
+      ]
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA'
+      ]
+
+  # Step 3: Deploy to Cloud Run with the required settings
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run',
+        'deploy',
+        'agent-ops',
+        '--image=asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA',
+        '--region=asia-south1',
+        '--platform=managed',
+        '--service-account=911008082076-compute@developer.gserviceaccount.com',
+        '--concurrency=80',
+        '--timeout=300',
+        '--max-instances=20',
+        '--cpu=1',
+        '--memory=512Mi',
+        '--port=8080',
+        '--allow-unauthenticated'
+      ]
+
+images:
+  - 'asia-south1-docker.pkg.dev/gen-lang-client-0206046645/cloud-run-source-deploy/agent_ops/agent-ops:$COMMIT_SHA'
